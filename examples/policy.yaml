@@ -1,0 +1,39 @@
+# mcp-gatekeeper policy for the fake payments server in this folder.
+# Rules are checked top to bottom; the first one that matches decides.
+
+version: 1
+default: deny            # anything not matched below is blocked
+approval_timeout: 120    # seconds to wait for a person before denying
+
+rules:
+  - name: read-only lookups
+    tools: [get_balance, "payments.list_*"]
+    action: allow
+
+  - name: no payments to external accounts
+    tools: [transfer_funds]
+    when:
+      to_account: { matches: "EXT-*" }
+    action: deny
+
+  - name: large transfers need a second pair of eyes
+    tools: [transfer_funds]
+    when:
+      amount: { gt: 1000 }
+    action: approve
+
+  - name: small transfers by the finance agent
+    tools: [transfer_funds]
+    roles: [finance-agent]
+    action: allow
+    rate_limit: { calls: 5, per_seconds: 60 }
+
+  - name: payee changes need approval
+    tools: [add_payee]
+    action: approve
+
+  # delete_account matches no rule, so the default (deny) applies and the
+  # tool is hidden from the agent's tool list.
+
+redact:
+  keys: [account_holder_dob]   # extra argument names to mask in the log

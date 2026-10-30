@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mcp-gatekeeper"
+version = "0.1.0"
+description = "Permissions, human approvals and a tamper-evident audit log for MCP tool calls."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Suman Mukherjee" }]
+requires-python = ">=3.11"
+keywords = ["mcp", "model-context-protocol", "ai-agents", "ai-governance", "audit-log", "security"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Topic :: Security",
+]
+dependencies = [
+  "typer>=0.12",
+  "rich>=13.7",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+# The official MCP SDK is only used by the tests, to prove a real client and server work through the proxy.
+dev = ["pytest>=8", "ruff>=0.5", "mcp>=2.3"]
+
+[project.scripts]
+mcp-gatekeeper = "mcp_gatekeeper.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcp_gatekeeper"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP"]
+# Long regexes and messages read better unwrapped; `ruff format` handles code layout.
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

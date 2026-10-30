@@ -1,0 +1,17 @@
+{
+  "mcpServers": {
+    "payments": {
+      "command": "mcp-gatekeeper",
+      "args": [
+        "run",
+        "--policy", "/path/to/mcp-gatekeeper/examples/policy.yaml",
+        "--name", "payments",
+        "--role", "finance-agent",
+        "--audit-log", "/path/to/audit/audit.jsonl",
+        "--approvals-dir", "/path/to/audit/approvals",
+        "--",
+        "python", "/path/to/mcp-gatekeeper/examples/payments_server.py"
+      ]
+    }
+  }
+}
